@@ -1,0 +1,18 @@
+.fire {
+    background-color: #ff4d4d;
+    color: white;
+}
+.normal {
+    background-color: #28a745;
+    color: white;
+}
+.unknown {
+    background-color: #6c757d;
+    color: white;
+}
+.alert-realtime {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+}

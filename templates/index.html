@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Trang chủ - Hệ thống Báo cháy{% endblock %}
+{% block content %}
+<h1 class="text-center">Hệ thống Báo cháy</h1>
+
+<!-- Trạng thái hiện tại -->
+<div class="card text-center mt-4">
+    <div class="card-header">Trạng thái hiện tại</div>
+    <div class="card-body {% if status == 'fire' %}fire{% elif status == 'normal' %}normal{% else %}unknown{% endif %}">
+        <h2 class="card-title">{{ status | upper }}</h2>
+        <p class="card-text">Cập nhật: {{ timestamp }}</p>
+    </div>
+</div>
+
+<!-- Mức độ rủi ro -->
+<div class="card mt-4">
+    <div class="card-header">Mức độ rủi ro cháy</div>
+    <div class="card-body">
+        <h4 class="text-{{ risk_color }}">{{ risk_level }}</h4>
+    </div>
+</div>
+
+<!-- Biểu đồ -->
+<div class="card mt-4">
+    <div class="card-header">Thống kê 24h qua</div>
+    <div class="card-body">
+        <canvas id="statusChart"></canvas>
+    </div>
+</div>
+<div class="card mt-4">
+    <div class="card-header">Xu hướng cảnh báo cháy</div>
+    <div class="card-body">
+        <canvas id="trendChart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('statusChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ chart_labels | safe }},
+            datasets: [{
+                label: 'Số lần',
+                data: {{ chart_values | safe }},
+                backgroundColor: ['#ff4d4d', '#28a745'],
+            }]
+        },
+        options: { scales: { y: { beginAtZero: true } } }
+    });
+
+    const trendCtx = document.getElementById('trendChart').getContext('2d');
+    new Chart(trendCtx, {
+        type: 'line',
+        data: {
+            labels: {{ trend_labels | safe }},
+            datasets: [{
+                label: 'Cảnh báo cháy theo giờ',
+                data: {{ trend_values | safe }},
+                borderColor: '#ff4d4d',
+                fill: false
+            }]
+        },
+        options: { scales: { y: { beginAtZero: true } } }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,10 @@
+
+flask
+flask-login
+flask-wtf
+flask-limiter
+flask-socketio
+pymysql
+gunicorn
+WTForms==3.1.2
+gevent==23.9.1

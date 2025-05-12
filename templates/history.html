@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Lịch sử - Hệ thống Báo cháy{% endblock %}
+{% block content %}
+<h1 class="text-center">Lịch sử Báo cháy</h1>
+
+<!-- Form tìm kiếm -->
+<div class="card mt-4">
+    <div class="card-header">Tìm kiếm</div>
+    <div class="card-body">
+        <form method="GET">
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="status" class="form-label">Trạng thái</label>
+                    <select name="status" id="status" class="form-control">
+                        <option value="">Tất cả</option>
+                        <option value="fire" {% if search_status == 'fire' %}selected{% endif %}>Fire</option>
+                        <option value="normal" {% if search_status == 'normal' %}selected{% endif %}>Normal</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="start" class="form-label">Từ</label>
+                    <input type="datetime-local" name="start" id="start" class="form-control" value="{{ search_start }}">
+                </div>
+                <div class="col-md-4">
+                    <label for="end" class="form-label">Đến</label>
+                    <input type="datetime-local" name="end" id="end" class="form-control" value="{{ search_end }}">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Tìm kiếm</button>
+        </form>
+    </div>
+</div>
+
+<!-- Lịch sử -->
+<div class="card mt-4">
+    <div class="card-header">Lịch sử cảnh báo</div>
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Trạng thái</th>
+                    <th>Thời gian</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in history %}
+                <tr>
+                    <td>{{ entry['status'] | upper }}</td>
+                    <td>{{ entry['timestamp'] }}</td> <!-- Sửa lỗi .strftime() -->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <nav>
+            <ul class="pagination">
+                {% if page > 1 %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('history', page=page-1, status=search_status, start=search_start, end=search_end) }}">Trước</a>
+                </li>
+                {% endif %}
+                {% for p in range(1, total_pages + 1) %}
+                <li class="page-item {% if p == page %}active{% endif %}">
+                    <a class="page-link" href="{{ url_for('history', page=p, status=search_status, start=search_start, end=search_end) }}">{{ p }}</a>
+                </li>
+                {% endfor %}
+                {% if page < total_pages %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('history', page=page+1, status=search_status, start=search_start, end=search_end) }}">Sau</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
+{% endblock %}
